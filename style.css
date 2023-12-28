@@ -17,9 +17,15 @@ body {
 }
 
 #screen {
+    display: flex;
     background-color: bisque;
     margin: 8px;
-    height: 80px;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100px;
+    font-family: monospace;
+    font-size:64px;
+    font-weight: bold;
 }
 
 .row{
