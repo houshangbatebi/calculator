@@ -1,0 +1,53 @@
+body {
+    background-color:aquamarine; 
+}
+.container {
+    display:flex;
+    height: 100vh;
+}
+
+.calculator-container {
+    flex: 0 0 auto;
+    background-color: black;
+    width: auto;
+    margin: auto;
+    border: 10px solid rgb(36, 36, 36);
+    border-radius: 10px;
+    padding: 1px;
+}
+
+#screen {
+    background-color: bisque;
+    margin: 8px;
+    height: 80px;
+}
+
+.row{
+    display: flex;
+    gap:2px;
+    padding: 1px 0;
+}
+
+button {
+    width: 100px;
+    height: 80px;
+    font-size: 28px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+#ac{
+    width: 202px;
+    background-color: rgb(230, 46, 46);
+    color: white;
+}
+
+#equal {
+    width: 202px;
+    background-color: rgb(0, 162, 255);
+    color: white;
+}
+
+.operator {
+    background-color: orange;
+}
