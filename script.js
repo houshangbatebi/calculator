@@ -1,10 +1,11 @@
 // Store the current operands and operator
-let firstNumber = 0
+let firstNumber = undefined
 let operator = undefined
 let secondNumber = undefined
 
-let currentNumber = 0
 let digitCounter = 0
+let isNewNumberEntered = false;
+let calcResult
 
 const screen = document.querySelector('#screen')
 
@@ -19,28 +20,29 @@ digitButtons.forEach((digitBtn) => {
             } else {
                 screen.textContent = 0
             }
+            // Update new number flag
+            isNewNumberEntered = true;
         }
         else if(digitCounter > 0 && digitCounter < 10){
             screen.textContent += event.target.textContent
             digitCounter++
         }
-        currentNumber = screen.textContent
     })
 })
 
 // Do calculation
 function operate(firstNum, secondNum, operator) {
     if (operator == '+') {
-        return add(firstNum, secondNum)
+        return add(Number(firstNum), Number(secondNum))
     }
     if (operator == '-') {
-        return subtract(firstNum, secondNum)
+        return subtract(Number(firstNum), Number(secondNum))
     }
-    if (operator = '*') {
-        return multiply(firstNum, secondNum)
+    if (operator == '*') {
+        return multiply(Number(firstNum), Number(secondNum))
     }
     if (operator == '/') {
-        return divide(firstNum, secondNum)
+        return divide(Number(firstNum), Number(secondNum))
     }
 }
 
@@ -60,3 +62,45 @@ function multiply(a, b) {
 function divide(a, b) {
     return a / b
 }
+
+
+// Math Operator button handling
+const mathOperators = document.querySelectorAll('.operator')
+mathOperators.forEach((mathOperator) => {
+    mathOperator.addEventListener('click', (event) => {
+        if(firstNumber == undefined) {
+            firstNumber = screen.textContent
+            operator = event.target.textContent
+        }
+        else{
+            if(digitCounter == 0 && !isNewNumberEntered){
+                // No new number entered
+                operator = event.target.textContent
+            }
+            else {
+                secondNumber = screen.textContent
+                calcResult = operate(firstNumber, secondNumber, operator)
+                //update operator and firstNumber for next calculation round
+                operator = event.target.textContent
+                firstNumber = calcResult
+                //update screen
+                screen.textContent = calcResult
+            }
+        }
+        // Reset digit counter to receiving new number
+        digitCounter = 0
+        isNewNumberEntered = false
+    })
+})
+
+// Equal Button handling
+const equal = document.querySelector('#equal')
+equal.addEventListener('click', (event) => {
+    if(firstNumber != undefined) {
+        secondNumber = screen.textContent
+        screen.textContent = operate(firstNumber, secondNumber, operator)
+        // Reset first number and digit counter
+        firstNumber = undefined
+        digitCounter = 0
+    }
+})
