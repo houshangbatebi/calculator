@@ -122,4 +122,18 @@ decimalBtn.addEventListener('click', (event) => {
     }
 })
 
+// Handle the AC (All Clear) button
+const clearBtn = document.querySelector('#ac')
+clearBtn.addEventListener('click', () => resetCalculator())
+
+function resetCalculator(){
+    firstNumber = undefined
+    operator = undefined
+    secondNumber = undefined
+    digitCounter = 0
+    isNewNumberEntered = false;
+    calcResult = 0
+    decimalBtnClicked = false
+    screen.textContent = 0;
+}
 
