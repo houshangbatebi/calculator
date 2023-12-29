@@ -192,7 +192,7 @@ function shapeResult(result) {
             
                 // If an overflow still occurs despite reducing the precision, display an error message
                 if(calcResult.toString().length > 10) {
-                calcResult = 'OVERFLOW'
+                calcResult = 'Overflow!'
                 } 
             } 
         }
