@@ -137,3 +137,28 @@ function resetCalculator(){
     screen.textContent = 0;
 }
 
+// Handle DEL (backspace) button
+const delBtn = document.querySelector('#del')
+delBtn.addEventListener('click', () => {
+    if(digitCounter != 0) {
+        if(screen.textContent === '0.') {
+            screen.textContent = '0'
+            decimalBtnClicked = false
+            digitCounter = 0
+        }
+        else {
+            if(screen.textContent.length == 1) {
+                screen.textContent = '0'
+            }
+            else if(screen.textContent[screen.textContent.length - 1] == '.'){
+                screen.textContent = screen.textContent.substr(0,(screen.textContent.length-1))
+                decimalBtnClicked = false
+            }
+            else {
+                screen.textContent = screen.textContent.substr(0,(screen.textContent.length-1))
+            }
+            digitCounter--
+        }
+    }
+})
+
