@@ -6,6 +6,7 @@ let secondNumber = undefined
 let digitCounter = 0
 let isNewNumberEntered = false;
 let calcResult
+let decimalBtnClicked = false
 
 const screen = document.querySelector('#screen')
 
@@ -87,9 +88,10 @@ mathOperators.forEach((mathOperator) => {
                 screen.textContent = calcResult
             }
         }
-        // Reset digit counter to receiving new number
+        // Reset digit counter and decimal btn flag to receiving new number
         digitCounter = 0
         isNewNumberEntered = false
+        decimalBtnClicked = false
     })
 })
 
@@ -99,8 +101,25 @@ equal.addEventListener('click', (event) => {
     if(firstNumber != undefined) {
         secondNumber = screen.textContent
         screen.textContent = operate(firstNumber, secondNumber, operator)
-        // Reset first number and digit counter
+        // Reset first number, digit counter and decimal button flag
         firstNumber = undefined
         digitCounter = 0
+        decimalBtnClicked = false
     }
 })
+
+//decimal button handling
+const decimalBtn = document.querySelector('#decimal')
+decimalBtn.addEventListener('click', (event) => {
+    if(digitCounter == 0 && !decimalBtnClicked) {
+        screen.textContent = '0.'
+        digitCounter += 2
+        decimalBtnClicked = true;
+    } else if(!decimalBtnClicked && digitCounter < 10) {
+        screen.textContent += '.'
+        digitCounter++
+        decimalBtnClicked = true;
+    }
+})
+
+
