@@ -49,19 +49,22 @@ function operate(firstNum, secondNum, operator) {
 
 // Basic math functions
 function add(a, b) {
-    return a + b
+    return (a + b)
 }
 
 function subtract(a, b) {
-    return a - b
+    return (a - b)
 }
 
 function multiply(a, b) {
-    return a * b
+    return (a * b)
 }
 
 function divide(a, b) {
-    return a / b
+    if(b == 0) {
+        return 'Oops!'
+    }
+    return (a / b)
 }
 
 
@@ -81,6 +84,10 @@ mathOperators.forEach((mathOperator) => {
             else {
                 secondNumber = screen.textContent
                 calcResult = operate(firstNumber, secondNumber, operator)
+                
+                // Shape the result before update the screen
+                shapeResult(calcResult)
+                
                 //update operator and firstNumber for next calculation round
                 operator = event.target.textContent
                 firstNumber = calcResult
@@ -100,7 +107,12 @@ const equal = document.querySelector('#equal')
 equal.addEventListener('click', (event) => {
     if(firstNumber != undefined) {
         secondNumber = screen.textContent
-        screen.textContent = operate(firstNumber, secondNumber, operator)
+        calcResult = operate(firstNumber, secondNumber, operator)
+        
+        // Shape the result before update the screen
+        shapeResult(calcResult)
+        
+        screen.textContent = calcResult
         // Reset first number, digit counter and decimal button flag
         firstNumber = undefined
         digitCounter = 0
@@ -161,4 +173,28 @@ delBtn.addEventListener('click', () => {
         }
     }
 })
+
+
+function shapeResult(result) {
+    if(typeof result == "number" && result != NaN)
+        {
+            // Remove extra zeros in the decimal. Round numbers with more than 8 decimal digits.
+            calcResult = parseFloat(Math.round(calcResult * 1000000000)/1000000000)
+
+            // if the result length is too big for screen, change the result precision or throw a error message
+            if(calcResult.toString().length > 10){
+               if(calcResult > 0) {
+                    calcResult = calcResult.toPrecision(5) //now the screen supports up to +9.9999e+99 (positive number)
+                }
+                else {
+                    calcResult = calcResult.toPrecision(4) //now the screen supports up to -9.999e+99 (negative number)
+                }
+            
+                // If an overflow still occurs despite reducing the precision, display an error message
+                if(calcResult.toString().length > 10) {
+                calcResult = 'OVERFLOW'
+                } 
+            } 
+        }
+}
 
