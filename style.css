@@ -4,6 +4,7 @@ body {
 .container {
     display:flex;
     height: 100vh;
+    flex-direction: column;
 }
 
 .calculator-container {
@@ -16,9 +17,12 @@ body {
     padding: 1px;
 }
 
+#full-screen{
+    background-color: #FFEDDA;
+}
+
 #screen {
     display: flex;
-    background-color: bisque;
     margin: 8px;
     justify-content: flex-end;
     align-items: center;
@@ -26,6 +30,16 @@ body {
     font-family: monospace;
     font-size:64px;
     font-weight: bold;
+}
+
+#history{
+    display: flex;
+    margin: 8px;
+    justify-content: flex-end;
+    align-items: center;
+    height: 42px;
+    font-family: monospace;
+    font-size: 28px;
 }
 
 .row{
@@ -45,21 +59,18 @@ button {
 
 #ac{
     width: 202px;
-    /*background-color: rgb(230, 46, 46);*/
-    background-color: #EA4335;
+    background-color: #FF2442;
     color: white;
 }
 
 #equal {
     width: 202px;
-    /*background-color: rgb(0, 162, 255);*/
-    background-color: #4285F4;
+    background-color: #3DB2FF;
     color: white;
 }
 
 .operator {
-    /*background-color: orange;*/
-    background-color: #FBBC05;
+    background-color: #FFB830;
 }
 
 button:hover {
@@ -70,5 +81,23 @@ button:hover {
 button:active{
     transform: scale(0.93); 
     opacity: 0.8;
+}
+
+footer {
+    padding: 28px;
+    text-align: center;
+}
+
+footer > a {
+    text-decoration: none;
+    font-size: large;
+}
+
+footer > a:visited {
+    color: black; 
+}
+
+footer > a:hover {
+    text-decoration: underline;
 }
 

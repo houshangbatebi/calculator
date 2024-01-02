@@ -4,11 +4,15 @@ let operator = undefined
 let secondNumber = undefined
 
 let digitCounter = 0
-let isNewNumberEntered = false;
-let calcResult
+let isNewNumberEntered = true; 
+let calcResult = 0
 let decimalBtnClicked = false
+let preventOperate = false 
+let isNumber = true 
 
 const screen = document.querySelector('#screen')
+const historyNumber = document.querySelector('#history-number')
+const historyOperator = document.querySelector('#history-operator')
 
 // Digit button click handling
 const digitButtons = document.querySelectorAll('.digit')
@@ -23,8 +27,9 @@ digitButtons.forEach((digitBtn) => {
             }
             // Update new number flag
             isNewNumberEntered = true;
+            preventOperate = false
         }
-        else if(digitCounter > 0 && digitCounter < 10){
+        else if(digitCounter < 10){
             screen.textContent += event.target.textContent
             digitCounter++
         }
@@ -72,51 +77,72 @@ function divide(a, b) {
 const mathOperators = document.querySelectorAll('.operator')
 mathOperators.forEach((mathOperator) => {
     mathOperator.addEventListener('click', (event) => {
-        if(firstNumber == undefined) {
-            firstNumber = screen.textContent
-            operator = event.target.textContent
-        }
-        else{
-            if(digitCounter == 0 && !isNewNumberEntered){
-                // No new number entered
-                operator = event.target.textContent
+        
+        if(!preventOperate){
+            if(isNewNumberEntered){
+                isNewNumberEntered = false
+                digitCounter = 0
+                decimalBtnClicked = false
+                if(firstNumber == undefined){
+                    firstNumber = screen.textContent
+                    operator = event.target.textContent
+                    historyNumber.textContent = firstNumber
+                    historyOperator.textContent = operator
+                }
+                else {
+                    secondNumber = screen.textContent
+                    calcResult = operate(firstNumber, secondNumber, operator)
+                    isNumber = shapeResult(calcResult)
+                    //Checking the validity of the calculated value
+                    if(isNumber) {
+                        // The calculation result is allowed (It's a number)
+                        firstNumber = calcResult
+                        operator = event.target.textContent
+                        screen.textContent = calcResult
+                        historyNumber.textContent = calcResult
+                        historyOperator.textContent = operator
+                    }
+                    else {
+                        // The calculation result is not allowed
+                        preventOperate = true
+                        firstNumber = undefined
+                        screen.textContent = calcResult
+                        historyNumber.textContent =''
+                        historyOperator.textContent = '*Try Again*'
+                    }
+                }
             }
             else {
-                secondNumber = screen.textContent
-                calcResult = operate(firstNumber, secondNumber, operator)
-                
-                // Shape the result before update the screen
-                shapeResult(calcResult)
-                
-                //update operator and firstNumber for next calculation round
                 operator = event.target.textContent
-                firstNumber = calcResult
-                //update screen
-                screen.textContent = calcResult
+                historyOperator.textContent = operator
             }
         }
-        // Reset digit counter and decimal btn flag to receiving new number
-        digitCounter = 0
-        isNewNumberEntered = false
-        decimalBtnClicked = false
     })
 })
+
 
 // Equal Button handling
 const equal = document.querySelector('#equal')
 equal.addEventListener('click', (event) => {
-    if(firstNumber != undefined) {
-        secondNumber = screen.textContent
-        calcResult = operate(firstNumber, secondNumber, operator)
-        
-        // Shape the result before update the screen
-        shapeResult(calcResult)
-        
-        screen.textContent = calcResult
-        // Reset first number, digit counter and decimal button flag
-        firstNumber = undefined
-        digitCounter = 0
-        decimalBtnClicked = false
+    if(!preventOperate){
+        if(firstNumber != undefined) {
+            secondNumber = screen.textContent
+            calcResult = operate(firstNumber, secondNumber, operator)
+            isNumber = shapeResult(calcResult)
+            if(!isNumber) {
+                //// The calculation result is not allowed
+                preventOperate = true
+            }
+            screen.textContent = calcResult
+            // Reset first number, digit counter and decimal button flag
+            firstNumber = undefined
+            digitCounter = 0
+            decimalBtnClicked = false
+            isNewNumberEntered = true;
+            // Reset history box
+            historyNumber.textContent = ''
+            historyOperator.textContent = ''
+        }
     }
 })
 
@@ -124,6 +150,8 @@ equal.addEventListener('click', (event) => {
 const decimalBtn = document.querySelector('#decimal')
 decimalBtn.addEventListener('click', (event) => {
     if(digitCounter == 0 && !decimalBtnClicked) {
+        preventOperate = false
+        isNewNumberEntered = true
         screen.textContent = '0.'
         digitCounter += 2
         decimalBtnClicked = true;
@@ -143,10 +171,14 @@ function resetCalculator(){
     operator = undefined
     secondNumber = undefined
     digitCounter = 0
-    isNewNumberEntered = false;
+    isNewNumberEntered = true;
     calcResult = 0
     decimalBtnClicked = false
     screen.textContent = 0;
+    preventOperate = false
+    isNumber = true
+    historyNumber.textContent =''
+    historyOperator.textContent =''
 }
 
 // Handle DEL (backspace) button
@@ -175,26 +207,37 @@ delBtn.addEventListener('click', () => {
 })
 
 
+// shape the result and checking the validity of the result
 function shapeResult(result) {
-    if(typeof result == "number" && result != NaN)
-        {
-            // Remove extra zeros in the decimal. Round numbers with more than 8 decimal digits.
-            calcResult = parseFloat(Math.round(calcResult * 1000000000)/1000000000)
+    if(typeof result == "number" && result != NaN){
+        // The result is a number
+        // Remove extra zeros in the decimal. Round numbers with more than 8 decimal digits.
+        calcResult = parseFloat(Math.round(calcResult * 1000000000)/1000000000)
 
-            // if the result length is too big for screen, change the result precision or throw a error message
-            if(calcResult.toString().length > 10){
-               if(calcResult > 0) {
-                    calcResult = calcResult.toPrecision(5) //now the screen supports up to +9.9999e+99 (positive number)
-                }
-                else {
-                    calcResult = calcResult.toPrecision(4) //now the screen supports up to -9.999e+99 (negative number)
-                }
+        // if the result length is too big for screen, change the result precision or throw a error message
+        if(calcResult.toString().length > 10){
+            if(calcResult > 0) {
+                calcResult = calcResult.toPrecision(5) //now the screen supports up to +9.9999e+99 (positive number)
+            }
+            else {
+                calcResult = calcResult.toPrecision(4) //now the screen supports up to -9.999e+99 (negative number)
+            }
             
-                // If an overflow still occurs despite reducing the precision, display an error message
-                if(calcResult.toString().length > 10) {
-                calcResult = 'Overflow!'
-                } 
+            // If an overflow still occurs despite reducing the precision, display an error message
+            if(calcResult.toString().length > 10) {
+            calcResult = 'Overflow!'
+            // The result is not within the allowed range
+            return false
             } 
         }
+        return true 
+    }
+    else {
+        // The result is not allowed
+        return false
+    }
+        
 }
+
+
 
